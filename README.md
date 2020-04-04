@@ -65,4 +65,32 @@ by serializing the data.
 
 - Dewpoint (calculated)
 
+#### Page 4:
 
+- Forecast 
+  - :question: Does our device support this feature? It requires among other things Barometric Reading & Trend, Humidity, Latitude & Longitude. I'm not sure if our device supports this.
+  
+- Heat Index (calculated)
+
+- Humidity
+
+#### Page 5:
+
+- Moon Phase 
+  - :question: does our device support this?
+  
+- Rainfall
+
+- Rain Rate
+
+#### Page 6: 
+
+- Sunrise and Sunset
+
+- Temperature
+
+#### Page 8:
+
+- Wind
+
+- Wireless Communications
