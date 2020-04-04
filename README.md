@@ -1,5 +1,11 @@
 # vantageProCodeRepo
 
+## Key:
+ :key: = important
+
+:squirrel: = important design decisions
+ 
+
 ## What we're doing:
 You are going to develop the core software for the [Wireless Vantage Pro2 Integrated Sensor Suite](https://www.davisinstruments.com/product/wireless-vantage-pro2-integrated-sensor-suite/) (ISS)
 (Product number: 6322) manufactured by [Davis Instruments](https://www.davisinstruments.com/).
@@ -13,8 +19,15 @@ You are going to develop the core software for the [Wireless Vantage Pro2 Integr
 by serializing the data.
 
 ## What features does this Wireless Vantage Pro2™ ISS Product number:6322 possess?
-- Detachable anemometer provides wind speed and direction and can be sited up to 40 ft. (12 m) above the other sensors.
-- rain collector
-- temperature and humidity  sensors 
+- :key: Detachable anemometer provides wind speed and direction and can be sited up to 40 ft. (12 m) above the other sensors.
+- :key: rain collector
+- :key: temperature and humidity  sensors 
 
 ## Useful information from: Vantage Pro2 Wireless Stations Specification Sheet.pdf
+
+#### Page 1:
+
+- Wind sensor cable length
+ - Cable Length, Anemometer: 40 feet (12 m) (included) 240 feet (73 m) (maximum recommended)
+ - Note: Maximum displayable wind decreases as the length of cable increases. At 140’ (42 m) of cable, the maximum wind speed displayed is 135 mph (60 m/s); at 240’ (73 m), the maximum wind speed displayed is 100 mph (34 m/s).
+   -  :squirrel: When calculating the max wind speed for our random input generator, we need to factor in the cable length as a field.
