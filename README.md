@@ -19,9 +19,9 @@ You are going to develop the core software for the [Wireless Vantage Pro2 Integr
 by serializing the data.
 
 ## What features does this Wireless Vantage Pro2™ ISS Product number:6322 possess?
-- :key: Detachable anemometer provides wind speed and direction and can be sited up to 40 ft. (12 m) above the other sensors.
-- :key: rain collector
-- :key: temperature and humidity  sensors 
+- :key: Detachable _anemometer_ provides wind speed and direction and can be sited up to 40 ft. (12 m) above the other sensors.
+- :key: _rain collector_
+- :key: _temperature and humidity sensors_ 
 
 ## Useful information from: Vantage Pro2 Wireless Stations Specification Sheet.pdf
 
@@ -31,3 +31,5 @@ by serializing the data.
  - Cable Length, Anemometer: 40 feet (12 m) (included) 240 feet (73 m) (maximum recommended)
  - Note: Maximum displayable wind decreases as the length of cable increases. At 140’ (42 m) of cable, the maximum wind speed displayed is 135 mph (60 m/s); at 240’ (73 m), the maximum wind speed displayed is 100 mph (34 m/s).
    -  :squirrel: When calculating the max wind speed for our random input generator, we need to factor in the cable length as a field.
+   
+ - Rain Collector Type: Tipping spoon, 0.01" per tip for US versions, 0.2 mm for metric versions, 33.2 in^2 (214 cm ) collection area
