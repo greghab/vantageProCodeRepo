@@ -12,14 +12,19 @@
 ## Questions:
 
 - :question: Do we have to keep track of current draw and battery status (Page 2)?
+  - He said we probably don't have to worry about this.
 
 - :question: Do we have to be aware of external temperatures to ensure we are in safe operating temperatures (Page 2)?
+  - Probably not.
 
 - :question: Do we have to simulate the various display modes of the console. We transmit the data to the console, which displays it. (Page 3)?
+  - This is in part 2 of the assignment.
  
  - :question: This thing has a solar panel. Do we have to simulate that?
+   - Probably not.
  
  - :question: This thing communicates to the console (the display) via wireless communication. Do we have to factor in a delay of our output because of the transmission time?
+   - Probably not.
 
 ## What we're doing:
 You are going to develop the core software for the [Wireless Vantage Pro2 Integrated Sensor Suite](https://www.davisinstruments.com/product/wireless-vantage-pro2-integrated-sensor-suite/) (ISS)
