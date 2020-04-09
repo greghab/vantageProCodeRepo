@@ -9,6 +9,22 @@
 
 :question: = question
 
+## Links:
+
+[https://www.baeldung.com/java-concurrent-skip-list-map]
+
+[https://www.baeldung.com/java-serialization]
+
+[https://www.baeldung.com/java-runnable-callable]
+
+[https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ScheduledExecutorService.html#scheduleAtFixedRate(java.lang.Runnable,%20long,%20long,%20java.util.concurrent.TimeUnit)]
+
+[https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html]
+
+[https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html]
+
+[https://stackoverflow.com/questions/1085709/what-does-synchronized-mean]
+
 ## Questions:
 
 - :question: Do we have to keep track of current draw and battery status (Page 2)?
