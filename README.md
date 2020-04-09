@@ -2,6 +2,12 @@
 
 [ebay link of this thing with a decent picture](https://www.ebay.com/itm/Davis-6322-Vantage-Pro2-Vue-Wireless-Integrated-Sensor-Suite-Radiation-Shield/362028158445)
 
+## Note!!
+
+Please don't edit the source code directly.
+
+Please fork it, and submit a pull request.
+
 ## How to get the code into your IDE:
 
 1) Fork the code (to your GitHub profile).
