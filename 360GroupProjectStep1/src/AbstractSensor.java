@@ -1,4 +1,0 @@
-// edit
-public class AbstractSensor {
-
-}
