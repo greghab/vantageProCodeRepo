@@ -13,17 +13,18 @@ import console.Console;
 import controller.Controller;
 import controller.DataPacket;
 
-public class RainSensor extends AbstractSensor implements Runnable {
+public class RainfallRate extends AbstractSensor implements Runnable {
 	private String sensor = "Rain";
-	private String measurementString = "rainfall";
+	private String measurementString = "rain rate";
 
 
-	public static File f = new File("rainSensorSerializedOutput.txt");
-	private static final int maxVal = 9999; // 99.99"
-	private static final int minVal = 0; // 0"
+	public static File f = new File("rainrateSerializedOutput.txt");
+	private static final int maxVal = 3000; // 30"/hr
+	private static final int minVal = 0; // 0"/hr
+
 	public double getRain() {
-		// [0, 99.99], resolution 0.01"
-		double randomNumber = (rand.nextInt(maxVal + 1 - minVal) + minVal) / 100.0;  
+		// 0 or [0.4, 30]
+		double randomNumber = (rand.nextInt(maxVal + 1 - minVal) + minVal) /100.0 ;  
 		if (randomNumber < 0.04) {
 			randomNumber = 0;
 		}
@@ -47,7 +48,6 @@ public class RainSensor extends AbstractSensor implements Runnable {
 		
 		DataPacket rdp = new DataPacket(eventTime, sensor, measurementString, getRain());
 		Controller.rainSet.add(rdp);
-		 
 		 TreeSet<DataPacket> rainSerialize = (TreeSet<DataPacket>) 
 				 Controller.rainSet.tailSet(new DataPacket(ZonedDateTime
 		          .now()
@@ -55,7 +55,6 @@ public class RainSensor extends AbstractSensor implements Runnable {
 	
 			try {
 				oos.writeObject(rainSerialize);
-
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
