@@ -2,6 +2,20 @@
 
 [ebay link of this thing with a decent picture](https://www.ebay.com/itm/Davis-6322-Vantage-Pro2-Vue-Wireless-Integrated-Sensor-Suite-Radiation-Shield/362028158445)
 
+## Note!!
+
+Please don't edit the source code directly.
+
+Please fork it, and submit a pull request.
+
+## How to get the code into your IDE:
+
+1) Fork the code (to your GitHub profile).
+
+2) Go to your Fork, click 'Clone or Download', copy that link
+
+3)Eclipse: File -> Import -> Projects from Git -> Clone URI -> Paste your forked github link into 'URI', type in your GitHub username and password -> select 'store in secure store' -> next -> pick a password for eclipse -> next (you want master) -> change the directory to store the code on your PC if you want, hit next -> next (import existing eclipse projcets) -> next -> -> next... 
+
 ## Key:
  :key: = important
 
@@ -10,6 +24,12 @@
 :question: = question
 
 ## Links:
+
+Eclipse EGit: [https://youtube.com/watch?v=LPT7v69guVY]
+
+Serialization: [https://youtube.com/watch?v=qo9S2CeoqQE]
+
+Threads: [https://youtube.com/watch?v=qJsZZAa7yJI]
 
 [https://www.baeldung.com/java-concurrent-skip-list-map]
 
