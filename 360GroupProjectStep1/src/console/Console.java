@@ -26,5 +26,6 @@ public class Console {
 		// get a DataPacket from the set, used for the println statement.
 		 DataPacket dp = obj1.iterator().next(); 
 		System.out.println("serialized " + dp.getMeasurement() + " data is: " + obj1.toString());
+	    ois.close();
 	}
 }
