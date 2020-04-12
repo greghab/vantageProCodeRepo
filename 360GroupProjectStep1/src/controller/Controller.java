@@ -28,11 +28,12 @@ import console.Console;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import sensors.HumiditySensor;
 import sensors.RainSensor;
 import sensors.RainfallRate;
 import sensors.TemperatureSensor;
 import sensors.WindSensor;
-import toDelete.RainDataPacket;
+// import toDelete.RainDataPacket;
 
 // https://dev4devs.com/2016/06/21/java-how-to-create-threads-that-return-values/
 // https://www.baeldung.com/java-runnable-callable
@@ -41,8 +42,10 @@ public class Controller {
 
 	private static int rainSensorUpdateInterval = 1; // temporary value for now
 	private static int rainfallRateUpdateInterval = 2; // temporary value for now
+	private static final int HUMIDITY_UPDATE_INTERVAL = 1;
 	public static TreeSet<DataPacket> rainSet = new TreeSet<DataPacket>();
 	public static TreeSet<DataPacket> rainRateSet = new TreeSet<DataPacket>();
+	public static TreeSet<DataPacket> humiditySet = new TreeSet<>();
 
 	public static File f;
 	public static FileOutputStream fos;
@@ -56,6 +59,7 @@ public class Controller {
 		WindSensor wind = new WindSensor(30);
 		RainSensor rain = new RainSensor();
 		RainfallRate rainfallRate = new RainfallRate();
+		HumiditySensor humidity = new HumiditySensor();
 
 		//scheduledExecutorService.scheduleAtFixedRate(temp, 0, 3, TimeUnit.SECONDS);
 		//scheduledExecutorService.scheduleAtFixedRate(wind, 0, 1, TimeUnit.SECONDS);
@@ -64,5 +68,7 @@ public class Controller {
 				rainSensorUpdateInterval, TimeUnit.SECONDS);
 		scheduledExecutorService.scheduleAtFixedRate(rainfallRate, 0, 
 				rainfallRateUpdateInterval, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate
+			(humidity, 0, HUMIDITY_UPDATE_INTERVAL, TimeUnit.SECONDS);
 	}
 }
