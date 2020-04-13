@@ -74,21 +74,16 @@ public class Controller {
 
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 //		TemperatureSensor temp = new TemperatureSensor();
-//		WindSensor wind = new WindSensor(30);
+		WindSensor windSpeed = new WindSensor(windSpeedSet, windSpeedFile, 30);
 		RainSensor rain = new RainSensor(rainfallSet, rainfallFile);
 		RainfallRate rainfallRate = new RainfallRate(rainRateSet, rainRateFile, rainfallSet);
-
-		//scheduledExecutorService.scheduleAtFixedRate(temp, 0, 3, TimeUnit.SECONDS);
-		//scheduledExecutorService.scheduleAtFixedRate(wind, 0, 1, TimeUnit.SECONDS);
-			
-		// Sensors:
 		
-		//rain.rainfallUpdate();
+		scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, 
+				windSpeedUpdateInterval, TimeUnit.SECONDS);
 		
 		
 		scheduledExecutorService.scheduleAtFixedRate(rain, 0, 
 				rainSensorUpdateInterval, TimeUnit.SECONDS);
-		
 		
 		
 		
