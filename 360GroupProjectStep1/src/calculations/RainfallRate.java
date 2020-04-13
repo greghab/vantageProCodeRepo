@@ -38,6 +38,9 @@ public class RainfallRate extends AbstractSensor<Double> implements Runnable {
 		          .now()
 		          .minusSeconds(PREV_DATA_LENGTH), sensor, measurementString, 0.0));
 
+		 if (inputSetTail.size() == 0) {
+			 throw new IllegalArgumentException("rain rate input set is empty!");
+		 }
 		 BigDecimal sumVal = new BigDecimal(0);
 		 for (DataPacket<Double> dp: inputSetTail) {
 			 BigDecimal dpVal = new BigDecimal(dp.getValue());
