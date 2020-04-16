@@ -43,60 +43,18 @@ public class RainSensor extends AbstractSensor<Double> implements Runnable {
 		return randomNumber;
 	}
 	
-//	public void run() {
-//		System.out.println("runRainSensorExecuted");
-//		try {
-//			fos = new FileOutputStream(f);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		try {
-//			oos = new ObjectOutputStream(fos);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		eventTime = ZonedDateTime.now();
-//		
-//		DataPacket rdp = new DataPacket(eventTime, sensor, measurementString, getRain());
-//		Controller.rainSet.add(rdp);
-//		 
-//		 TreeSet<DataPacket> rainSerialize = (TreeSet<DataPacket>) 
-//				 Controller.rainSet.tailSet(new DataPacket(ZonedDateTime
-//		          .now()
-//		          .minusSeconds(60), sensor, measurementString, 0.0));
-//	
-//			try {
-//				oos.writeObject(rainSerialize);
-//
-//			} catch (IOException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//			
-//			try {
-//				Controller.con.readSerializedData(f);
-//				oos.flush();
-//			    oos.close();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			//System.out.println("RainSensorThread");
-//
-//	}
-	
 	public void run() {
 		try {
 			fos = new FileOutputStream(f);
 		} catch (FileNotFoundException e) {
+			System.out.println("File Not Found");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			oos = new ObjectOutputStream(fos);
 		} catch (IOException e) {
+			System.out.println("IO Exception");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -129,50 +87,5 @@ public class RainSensor extends AbstractSensor<Double> implements Runnable {
 				e.printStackTrace();
 			}
 			//System.out.println("RainSensorThread");
-
 	}
-
-//	public void rainRateUpdate() {
-//		System.out.println("rainRate");
-//		try {
-//			fos = new FileOutputStream(rainRateFile);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		try {
-//			oos = new ObjectOutputStream(fos);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		eventTime = ZonedDateTime.now();
-//		
-//		DataPacket rdp = new DataPacket(eventTime, sensor, measurementString, getRain());
-//		Controller.rainSet.add(rdp);
-//		 
-//		 TreeSet<DataPacket> rainSerialize = (TreeSet<DataPacket>) 
-//				 Controller.rainSet.tailSet(new DataPacket(ZonedDateTime
-//		          .now()
-//		          .minusSeconds(60), sensor, measurementString, 0.0));
-//	
-//			try {
-//				oos.writeObject(rainSerialize);
-//
-//			} catch (IOException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//			
-//			try {
-//				Controller.con.readSerializedData(f);
-//				oos.flush();
-//			    oos.close();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			//System.out.println("RainSensorThread");
-//
-//	}
 }
