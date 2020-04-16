@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -74,12 +75,16 @@ public class Controller {
 
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 //		TemperatureSensor temp = new TemperatureSensor();
-		WindSensor windSpeed = new WindSensor(windSpeedSet, windSpeedFile, 30);
-		RainSensor rain = new RainSensor(rainfallSet, rainfallFile);
+		//WindSensor windSpeed = new WindSensor(windSpeedSet, windSpeedFile, 30);
+		//RainSensor rain = new RainSensor(rainfallSet, rainfallFile);
+		
+		// throw a FileNotFoundException on purpose (figure out how to Unit Test this).
+		RainSensor rain = new RainSensor(rainfallSet, Paths.get("files/words.txt").toFile());
+
 		RainfallRate rainfallRate = new RainfallRate(rainRateSet, rainRateFile, rainfallSet);
 		
-		scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, 
-				windSpeedUpdateInterval, TimeUnit.SECONDS);
+		//scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, 
+		//		windSpeedUpdateInterval, TimeUnit.SECONDS);
 		
 		
 		scheduledExecutorService.scheduleAtFixedRate(rain, 0, 
