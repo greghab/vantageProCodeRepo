@@ -77,21 +77,8 @@ public class Controller {
 //		TemperatureSensor temp = new TemperatureSensor();
 		//WindSensor windSpeed = new WindSensor(windSpeedSet, windSpeedFile, 30);
 		//RainSensor rain = new RainSensor(rainfallSet, rainfallFile);
-		//File f = new File("E:\\Music");
-		//File f = Paths.get("../files/words.txt").toRealPath();
 		
-//		 // working directory is the src/ directory
-//        final File dictionaryFilePath = Paths.get("../files/words.txt").toRealPath().toFile();
-//       // final File inputFilePath = Paths.get("../files/words.txt").toRealPath().toFile();
-//        final File inputFilePath = Paths.get(args[0]).toRealPath().toFile();
-//       // final File outputFilePath = Paths.get(args[1]).toRealPath().toFile();
-//        final File outputFilePathTemp = new File(args[1]);
-//        String outputFileString = outputFilePathTemp.getCanonicalPath();
-//       // System.out.println("filename is " + filename);
-//        final File outputFilePath = new File(outputFileString);
-//        if(!outputFilePath.exists()){
-//            outputFilePath.createNewFile();
-//        }
+		// throw a FileNotFoundException on purpose (figure out how to Unit Test this).
 		RainSensor rain = new RainSensor(rainfallSet, Paths.get("files/words.txt").toFile());
 
 		RainfallRate rainfallRate = new RainfallRate(rainRateSet, rainRateFile, rainfallSet);
