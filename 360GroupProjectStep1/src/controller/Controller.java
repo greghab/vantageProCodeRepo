@@ -30,15 +30,17 @@ import console.Console;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import sensors.HumiditySensor;
 import sensors.RainSensor;
 import sensors.TemperatureSensor;
 import sensors.WindSensor;
-import toDelete.RainDataPacket;
+// import toDelete.RainDataPacket;
 
 // https://dev4devs.com/2016/06/21/java-how-to-create-threads-that-return-values/
 // https://www.baeldung.com/java-runnable-callable
 
 public class Controller {
+
 
 	public static final int rainSensorUpdateInterval = 20; // 20 to 24 seconds
 	public static final int rainfallRateUpdateInterval = 20; // 20 to 24
@@ -74,6 +76,7 @@ public class Controller {
 	public static void main(String[] args) throws Exception {
 
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
 //		TemperatureSensor temp = new TemperatureSensor();
 		//WindSensor windSpeed = new WindSensor(windSpeedSet, windSpeedFile, 30);
 		//RainSensor rain = new RainSensor(rainfallSet, rainfallFile);
@@ -105,5 +108,7 @@ public class Controller {
 		
 		scheduledExecutorService.scheduleAtFixedRate(rainfallRate, rateInitialDelay, 
 				rainfallRateUpdateInterval, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate
+			(humidity, 0, HUMIDITY_UPDATE_INTERVAL, TimeUnit.SECONDS);
 	}
 }
