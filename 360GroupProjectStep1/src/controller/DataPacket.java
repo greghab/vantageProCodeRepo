@@ -1,6 +1,6 @@
 package controller;
 
-import java.io.Serializable;
+import java.io.Serializable;	
 import java.time.ZonedDateTime;
 
 public class DataPacket<T> implements Comparable<DataPacket<T>>, Serializable {
@@ -26,21 +26,8 @@ public class DataPacket<T> implements Comparable<DataPacket<T>>, Serializable {
 	        this.eventTime = eventTime;
 	        this.measurement = measurement;
 	        this.value = value;
-	        sensor = "null";
+	        this.sensor = sensor;
 	    }
-
-    public DataPacket(ZonedDateTime eventTime, String measurement, T value) {
-        this.eventTime = eventTime;
-        this.measurement = measurement;
-        this.value = value;
-        sensor = "null";
-    }
-    
-
-    public DataPacket(ZonedDateTime eventTime, T value) {
-        this(eventTime, "null", value);
-    }
-    
     
     // returns sensor type for the given data packet
     public String getSensor() {

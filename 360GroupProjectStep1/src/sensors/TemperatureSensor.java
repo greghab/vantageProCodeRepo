@@ -1,42 +1,39 @@
+
 package sensors;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.text.DecimalFormat;
+import java.time.ZonedDateTime;
+import java.util.TreeSet;
+
 import controller.Controller;
+import controller.DataPacket;
 
 // https://stackoverflow.com/questions/2444019/how-do-i-generate-a-random-integer-between-min-and-max-in-java
 
 // updateInterval: 60 seconds
 
-public class TemperatureSensor extends AbstractSensor implements Runnable {
-		private String sensorName = "Temperature Sensor";
-		private static final int maxTemp = 150; // 150F
-		private static final int minTemp = -40; // -40F
-		private int updateInterval = 10; // 10 seconds
+public class TemperatureSensor extends AbstractSensor<Double> implements Runnable {
+	
 
-		public int getTemp() {
-			int sleepTime = 60 * 1000;
-			
-			long unixTime = System.currentTimeMillis() / 1000L;
-			
-			System.out.println("unixtime is " + unixTime);
-			//return 10;
-			//Random rand = new Random();
-			int randomNumber = rand.nextInt(maxTemp + 1 - minTemp) + minTemp; // [minTemp, maxTemp]
-			return randomNumber;
-		}
+	private String sensorName = "Temperature";
+	private String measurementDescription = "temperature";
+	private static final int maxTemp = 1500; // 150.0F
+	private static final int minTemp = -400; // -40.0F
+
+	public double getTemp() {
+		return  (rand.nextInt(maxTemp + 1 - minTemp) + minTemp)/10.0; // [-40.0, 150.0]
 		
-		public void setUpdateInterval(int updateInterval) {
-			if (updateInterval < 10) {
-				throw new IllegalArgumentException("Temp Sensor Update Interval < 10 sec");
-			} else if (updateInterval > 12) {
-				throw new IllegalArgumentException("Temp Sensor Uptdae Interval > 12 sec");
-			} else {
-				this.updateInterval = updateInterval;
-			}
-		}
-		
-		public void run() {
-			long unixTime = System.currentTimeMillis() / 1000L;
-			Controller.tempMap.put(unixTime, "tempVal");
-			System.out.println(unixTime + " This is the temp sensor updating every 3 seconds");
-		}
+	}
+	/*
+	 *  Arguments:
+	 *   outputSet, outputFile, double or int zero value, randomOutputFunction, sensor name, measurement name.
+	 */
+	public void run() {
+		super.run(Controller.TEMPERATURE_SET, Controller.TEMPERATURE_FILE, 0.0, getTemp(), sensorName, measurementDescription);
+	}
 }

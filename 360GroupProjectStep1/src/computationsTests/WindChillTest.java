@@ -1,7 +1,7 @@
 /**	
  * 
  */
-package sensorsTests;
+package computationsTests;
 
 import static org.junit.jupiter.api.Assertions.*;	
 
@@ -9,15 +9,19 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import computations.RainfallRate;
+import computations.WindChill;
 import controller.Controller;
 import controller.DataPacket;
 import sensors.RainSensor;
+import sensors.TemperatureSensor;
+import sensors.WindSensor;
 
 /**
  * @author greghab
  *
  */
-class RainSensorTest {
+class WindChillTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -35,20 +39,18 @@ class RainSensorTest {
 	}
 	@Test
 	void testGeneratedValues() {
-		Double[] rainGeneratedValues = {0.43, 0.44 ,0.48};
-
-		//ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-		RainSensor rain = new RainSensor();
-		rain.run();
-		rain.run();
-		rain.run();
 		
-		int i = 0;
-		for (DataPacket<Double> dp : Controller.RAINFALL_SET) {
-			if (Double.compare(dp.getValue(), rainGeneratedValues[i]) != 0) {
+		TemperatureSensor temp = new TemperatureSensor();
+		WindSensor windSpeed = new WindSensor(Controller.WINDSENSOR_LENGTH);
+		WindChill windChill = new WindChill();
+		
+		// values generate by rain.run() are: {0.43, 0.44 ,0.48};
+		temp.run();
+		windSpeed.run();
+		windChill.run();
+		
+		if (Controller.WINDCHILL_SET.last().getValue() != 84) {
 				fail("values dont match");
-			}
-			i++;
 		}
 	}
 }
