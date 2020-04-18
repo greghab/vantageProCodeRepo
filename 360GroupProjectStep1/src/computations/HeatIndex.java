@@ -1,5 +1,8 @@
 
-package calculations;
+package computations;
+
+import controller.Controller;
+import sensors.AbstractSensor;
 
 /**
  * Class for calculating the heat index given the relative humidity and temperature. This uses the  
@@ -7,21 +10,43 @@ package calculations;
  * @version 1.0
  * @date 4/12/2020
  */
-public class HeatIndex {
+public class HeatIndex  extends AbstractSensor<Integer> implements Runnable {
     
+
+	private String sensorName = "HeatIndex";
+	private String measurementDescription = "heat index";
+	private static final int MIN = -40; // -40F
+	private static final int MAX = 165; // -165F
+	
     /**
      * Calculates the heat index given the relative humidity and temperature (in farenheit). 
      * @param relativeHumidity the relative humidity. NOTE: for 80% humidity, plug in 80, not 0.80 
      * @param temperature the temperature.
      * @return the heat index. 
      */
-    public static double calculateHeatIndex(double relativeHumidity, double temperature) {
+	
+    public int calculateHeatIndex() {
+    	double relativeHumidity = 50.0;
+    	double temperature = 60.0;
         double heatIndex = simpleEquation(relativeHumidity, temperature);
-        if (heatIndex >= 80.0) 
-            return regressionEquation(relativeHumidity, temperature);
-        else
-            return heatIndex;
+        if (heatIndex >= 80.0) { 
+            heatIndex = regressionEquation(relativeHumidity, temperature);
+        }
+        if (heatIndex > 165) {
+        	heatIndex = 165;
+        }
+        if (heatIndex < -40) { 
+        	heatIndex = -40;
+        }
+        return (int) Math.round(heatIndex);
     }
+//    public static double calculateHeatIndex(double relativeHumidity, double temperature) {
+//        double heatIndex = simpleEquation(relativeHumidity, temperature);
+//        if (heatIndex >= 80.0) 
+//            return regressionEquation(relativeHumidity, temperature);
+//        else
+//            return heatIndex;
+//    }
     
     /**
      * Calculates the heat index in cases that the temperature is greater than 80 degrees.
@@ -70,4 +95,11 @@ public class HeatIndex {
 //        double t3 = calculateHeatIndex(10, 90);
 //        System.out.println("Heat index of 10RH and 90F (Should be ~85):" + t3);
 //    }
+	/*
+	 *  Arguments:
+	 *   outputSet, outputFile, double or int zero value, randomOutputFunction, sensor name, measurement name.
+	 */
+	public void run() {
+		super.run(Controller.HEATINDEX_SET, Controller.HEATINDEX_FILE, 0, calculateHeatIndex(), sensorName, measurementDescription);
+	}
 }

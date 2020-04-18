@@ -1,114 +1,121 @@
+/*
+ * Controller class for Weather Station TCSS 360 	
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
+ */
 package controller;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.nio.file.Paths;
-import java.time.ZonedDateTime;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import calculations.RainfallRate;
+import computations.DewPoint;
+import computations.HeatIndex;
+import computations.RainfallRate;
+import computations.WindChill;
 import console.Console;
-
 import java.util.concurrent.ScheduledExecutorService;
 
 import sensors.HumiditySensor;
 import sensors.RainSensor;
 import sensors.TemperatureSensor;
+import sensors.WindDirection;
 import sensors.WindSensor;
-// import toDelete.RainDataPacket;
 
-// https://dev4devs.com/2016/06/21/java-how-to-create-threads-that-return-values/
-// https://www.baeldung.com/java-runnable-callable
-
+/**
+ * 
+ * @authors Gregory Hablutzel
+ * This class represents the main controller box for the VantagePro2 Weather Station.
+ * This box gets sensor input, and serializes the data to a controller via a wireless connection.
+ * 
+ * The Controller class operates and schedules all the asynchronous sensor threads.
+ * It is these threads themselves who manipulate and serialize the data stored inside this Controller.
+ *
+ */
 public class Controller {
 
+	public static final int RAINFALL_UPDATE_INTERVAL =  1; // 20 to 24 seconds per specification.
+	public static final int RAINRATE_UPDATE_INTERVAL = 1; // 20 to 24 seconds per specification.
+	public static final int TEMP_UPDATE_INTERVAL = 1; // 10 to 12 seconds per specification.
+	public static final int WINDCHILL_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.
+	public static final int WINDDIRECTION_UPDATE_INTERVAL = 1; // 2.5 to 3 seconds per specification.
+	public static final int WINDSPEED_UPDATE_INTERVAL = 1; // 2.5 to 3 seconds per specification.
+	public static final int HEATINDEX_UPDATE_INTERVAL = 5; // 10 to 12 seconds per specification.
+	public static final int HUMIDITY_UPDATE_INTERVAL = 1; // 10 to 12 seconds per specification.
+	public static final int DEWPOINT_UPDATE_INTERVAL = 5; // 10 to 12 seconds per specification.
 
-	public static final int rainSensorUpdateInterval = 20; // 20 to 24 seconds
-	public static final int rainfallRateUpdateInterval = 20; // 20 to 24
-	public static final int tempSensorUpdateInterval = 10; // 10 to 12
-	public static final int windChillUpdateInterval = 10; // 10 to 12
-	public static final int windDirectionUpdateInterval = 3; // 2.5 to 3
-	public static final int windSpeedUpdateInterval = 3; // 2.5 to 3
-	public static final int heatIndexUpdateInterval = 10; // 10 to 12
-	public static final int humiditySensorUpdateInterval = 10; 
+	public static final int RATE_INITIAL_DELAY = 5; // delay to allow sensor data to populate before any rates are calculated on data.
+
+	public static final int WINDSENSOR_LENGTH = 30;
+
+	public static final TreeSet<DataPacket<Double>> RAINFALL_SET = new TreeSet<DataPacket<Double>>();
+	public static final TreeSet<DataPacket<Double>> RAINRATE_SET = new TreeSet<DataPacket<Double>>();
+	public static final TreeSet<DataPacket<Double>> TEMPERATURE_SET = new TreeSet<DataPacket<Double>>();
+	public static final TreeSet<DataPacket<Integer>> HUMIDITY_SET = new TreeSet<DataPacket<Integer>>();
+	public static final TreeSet<DataPacket<Integer>> WINDCHILL_SET = new TreeSet<DataPacket<Integer>>();
+	public static final TreeSet<DataPacket<Integer>> WINDDIRECTION_SET = new TreeSet<DataPacket<Integer>>();
+	public static final TreeSet<DataPacket<Integer>> WINDSPEED_SET = new TreeSet<DataPacket<Integer>>();
+	public static final TreeSet<DataPacket<Integer>> DEWPOINT_SET = new TreeSet<DataPacket<Integer>>();
+	public static final TreeSet<DataPacket<Integer>> HEATINDEX_SET = new TreeSet<DataPacket<Integer>>();
+
 	
-	public static final int rateInitialDelay = 5; // 10 seconds
+	public static final File RAINFALL_FILE = new File("rainfallSerializedOutput.txt");
+	public static final File RAINRATE_FILE = new File("rainfallRateSerializedOutput.txt");
+	public static final File TEMPERATURE_FILE = new File("temperatureSerializedOutput.txt");
+	public static final File HUMIDITY_FILE = new File("humiditySerializedOutput.txt");
+	public static final File WINDCHILL_FILE = new File("windChillSerializedOutput.txt");
+	public static final File WINDDIRECTION_FILE = new File("windDirectionSerializedOutput.txt");
+	public static final File WINDSPEED_FILE = new File("windSpeedSerializedOutput.txt");
+	public static final File DEWPOINT_FILE = new File("dewpointSerializedOutput.txt");
+	public static final File HEATINDEX_FILE = new File("heatIndexSerializedOutput.txt");
 
-
-
-	public static final TreeSet<DataPacket<Double>> rainfallSet = new TreeSet<DataPacket<Double>>();
-	public static final TreeSet<DataPacket<Double>> rainRateSet = new TreeSet<DataPacket<Double>>();
-	public static final TreeSet<DataPacket<Double>> temperatureSet = new TreeSet<DataPacket<Double>>();
-	public static final TreeSet<DataPacket<Integer>> humiditySet = new TreeSet<DataPacket<Integer>>();
-	public static final TreeSet<DataPacket<Integer>> windChillSet = new TreeSet<DataPacket<Integer>>();
-	public static final TreeSet<DataPacket<Integer>> windDirectionSet = new TreeSet<DataPacket<Integer>>();
-	public static final TreeSet<DataPacket<Integer>> windSpeedSet = new TreeSet<DataPacket<Integer>>();
-	
-	public static File rainfallFile = new File("rainfallSerializedOutput.txt");
-	public static File rainRateFile = new File("rainfallRateSerializedOutput.txt");
-	public static File temperatureFile = new File("temperatureSerializedOutput.txt");
-	public static File humidityFile = new File("humiditySerializedOutput.txt");
-	public static File windChillFile = new File("windChillSerializedOutput.txt");
-	public static File windDirectionFile = new File("windDirectionSerializedOutput.txt");
-	public static File windSpeedFile = new File("windSpeedSerializedOutput.txt");
-
-	public static Console con = new Console();
+	public static final Console CON = new Console();
 
 	public static void main(String[] args) throws Exception {
 
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-
-//		TemperatureSensor temp = new TemperatureSensor();
-		//WindSensor windSpeed = new WindSensor(windSpeedSet, windSpeedFile, 30);
-		//RainSensor rain = new RainSensor(rainfallSet, rainfallFile);
 		
-		// throw a FileNotFoundException on purpose (figure out how to Unit Test this).
-		RainSensor rain = new RainSensor(rainfallSet, Paths.get("files/words.txt").toFile());
+		TemperatureSensor temp = new TemperatureSensor();
+		WindSensor windSpeed = new WindSensor(WINDSENSOR_LENGTH);
+		WindDirection windDirection = new WindDirection();
+		WindChill windChill = new WindChill();
+		HumiditySensor humidity = new HumiditySensor();
 
-		RainfallRate rainfallRate = new RainfallRate(rainRateSet, rainRateFile, rainfallSet);
+		RainSensor rain = new RainSensor();
+		RainfallRate rainfallRate = new RainfallRate();
+		
+		HeatIndex heatIndex = new HeatIndex();
+		DewPoint dewPoint = new DewPoint();
+	
+
+
+		// throw a FileNotFoundException on purpose 
+		//RainSensor rain = new RainSensor(rainfallSet, Paths.get("files/words.txt").toFile());
+
 		
 		//scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, 
 		//		windSpeedUpdateInterval, TimeUnit.SECONDS);
 		
 		
-		scheduledExecutorService.scheduleAtFixedRate(rain, 0, 
-				rainSensorUpdateInterval, TimeUnit.SECONDS);
-		
-		
-		
-		// Rates:
-	//ZonedDateTime eventTime = ZonedDateTime.now();
+		//scheduledExecutorService.scheduleAtFixedRate(rain, 0, RAINFALL_UPDATE_INTERVAL, TimeUnit.SECONDS);
+	  //scheduledExecutorService.scheduleAtFixedRate(temp, 0, TEMP_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		//temp.run();
+		//scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, WINDSPEED_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		//windSpeed.run();
+		scheduledExecutorService.scheduleAtFixedRate(windDirection, 0, WINDDIRECTION_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		//scheduledExecutorService.scheduleAtFixedRate(humidity, 0, HUMIDITY_UPDATE_INTERVAL, TimeUnit.SECONDS);
+//		scheduledExecutorService.scheduleAtFixedRate(dewPoint, RATE_INITIAL_DELAY, DEWPOINT_UPDATE_INTERVAL, TimeUnit.SECONDS);
 
-//		DataPacket<Double> rdp = new DataPacket<Double>(eventTime, "rain", "0", 30.1);
-//		rainfallSet.add(rdp);
-//		
-//		eventTime = ZonedDateTime.now();
-//		
-//		DataPacket<Double> rdp2 = new DataPacket<Double>(eventTime, "rain", "0", 20.0);
-//		rainfallSet.add(rdp2);
-		
-		scheduledExecutorService.scheduleAtFixedRate(rainfallRate, rateInitialDelay, 
-				rainfallRateUpdateInterval, TimeUnit.SECONDS);
-		scheduledExecutorService.scheduleAtFixedRate
-			(humidity, 0, HUMIDITY_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		//scheduledExecutorService.scheduleAtFixedRate(heatIndex, RATE_INITIAL_DELAY, HEATINDEX_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		//scheduledExecutorService.scheduleAtFixedRate(windChill, RATE_INITIAL_DELAY, WINDCHILL_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		//windChill.run();
+
+		//scheduledExecutorService.scheduleAtFixedRate(rainfallRate, RATE_INITIAL_DELAY, RAINRATE_UPDATE_INTERVAL, TimeUnit.SECONDS);
 	}
 }
