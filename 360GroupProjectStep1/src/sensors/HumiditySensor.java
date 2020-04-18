@@ -20,6 +20,4 @@ public class HumiditySensor extends AbstractSensor<Integer> implements Runnable 
 	public void run() {
 		super.run(Controller.HUMIDITY_SET, Controller.HUMIDITY_FILE, 0, generateHumidity(), sensorName, measurementDescription);
 	}
-
-
 }

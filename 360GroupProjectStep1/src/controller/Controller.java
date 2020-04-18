@@ -104,8 +104,7 @@ public class Controller {
 		
 		
 		//scheduledExecutorService.scheduleAtFixedRate(rain, 0, RAINFALL_UPDATE_INTERVAL, TimeUnit.SECONDS);
-		
-		//scheduledExecutorService.scheduleAtFixedRate(temp, 0, TEMP_UPDATE_INTERVAL, TimeUnit.SECONDS);
+	  //scheduledExecutorService.scheduleAtFixedRate(temp, 0, TEMP_UPDATE_INTERVAL, TimeUnit.SECONDS);
 		//temp.run();
 		//scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, WINDSPEED_UPDATE_INTERVAL, TimeUnit.SECONDS);
 		//windSpeed.run();
