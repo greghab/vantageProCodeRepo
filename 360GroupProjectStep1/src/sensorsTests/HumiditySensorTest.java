@@ -1,62 +1,65 @@
-/**	
- * 
+/*
+ * HumiditySensor Test class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
  */
+
 package sensorsTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.TreeSet;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import controller.Controller;
 import controller.DataPacket;
-import sensors.AbstractSensor;
 import sensors.HumiditySensor;
-import sensors.RainSensor;
-import sensors.WindSensor;
 
 /**
- * @author greghab
- *
+ * 
+ * @author Egor Maksimenka
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class tests the HumiditySensor class for the VantagePro2 Weather Station.
  */
 class HumiditySensorTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
-		//Controller con = new Controller();
-	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeEach
-	void setUp() throws Exception {
-	}
 
+	/*
+	 * Ensures humidity is generated the correct values each time.
+	 */
 	@Test
 	void testGeneratedValues() {
-		int[] rainGeneratedValues = {56, 41, 77};
+		int[] generatedValues = {56, 41, 77};
 
 		//ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-		HumiditySensor humidity = new HumiditySensor();
+		HumiditySensor humidity = new HumiditySensor(Controller.HUMIDITY_FILE);
 		humidity.run();
 		humidity.run();
 		humidity.run();
 		
 		int i = 0;
-		for (DataPacket<Integer> dp : Controller.HUMIDITY_SET) {
-			if (dp.getValue() != rainGeneratedValues[i]) {
+		for (DataPacket<Integer> dp : humidity.getSet()) {
+			if (dp.getValue() != generatedValues[i]) {
 				fail("values dont match");
 			}
 			i++;
 		}
+	}
+	
+	/*
+	 * Triggers IllegalArgumentException for file parameter in constructor.
+	 */
+	@Test
+	void testConstructorNullFileException() {
+		  assertThrows(IllegalArgumentException.class,
+		            ()->{
+		        		new HumiditySensor(null); 
+		            });
 	}
 }

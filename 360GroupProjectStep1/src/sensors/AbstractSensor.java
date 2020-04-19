@@ -1,5 +1,5 @@
 /*
- * AbstractSensor class for Weather Station TCSS 360 	
+ * AbstractSensor class for Weather Station TCSS 360 		
  *  
  * Class: TCSS 360
  * Professor: Kivanç A. DINCER
@@ -15,6 +15,7 @@
  * For more information, see here: https://dev4devs.com/2016/06/21/java-how-to-create-threads-that-return-values/
  * 
  */
+
 package sensors;
 
 import java.io.File;
@@ -29,6 +30,16 @@ import java.util.TreeSet;
 import controller.Controller;
 import controller.DataPacket;
 
+
+/**
+ * 
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class is the Abstract Sensor class for the VantagePro2 Weather Station.
+ * It contains some of the variables needed for each sensor, a pseudo random number generator using a given seed, and more.
+ * It holds the run() method that each Runnable thread executes, and contains a round() method to round doubles.
+ */
+
 public abstract class AbstractSensor<T> {
 
 	// protected means that this class and any subclasses may access the property. 
@@ -42,67 +53,72 @@ public abstract class AbstractSensor<T> {
 	// 	the values it generates later in our JUnit Tests 
 	// 	(make sensor output pseudo-random and reproducible)
 	protected Random rand = new Random(seed);
-	//File f;
-	//protected TreeSet<DataPacket<T>> outputSet;
-	//protected File f;
 	protected FileOutputStream fos;
 	protected ObjectOutputStream oos;
+	protected TreeSet<DataPacket<T>> dataSet;
+	protected File file;
 	
-	
+	public TreeSet<DataPacket<T>> getSet() {
+		return dataSet;
+	}
+
+	/**
+	 * Rounds a double to a given level of precision (1 = 1 decimal point)
+	 * @param value: inputed value
+	 * @param precision: precision amount
+	 * @return returns rounded value
+	 */
 	public double round (double value, int precision) {
 	    int scale = (int) Math.pow(10, precision);
 	    return (double) Math.round(value * scale) / scale;
 	}
 	
+	/**
+	 * 
+	 * @param outputSet: output data set containing last 60 seconds of data.
+	 * @param f: output file.
+	 * @param zeroValue: zero value for integer or double (0 or 0.0).
+	 * @param value: measurement value.
+	 * @param sensor: sensor name.
+	 * @param measurementName: name of measurement.
+	 * 
+	 * Method that executes in Runnable thread.
+	 * Generates a new data point, adds it to the data set, and serializes last 60 seconds of data set to the Console.
+	 * Note, we cannot test this for exceptions, because the Runnable thread does not permit exceptions to be thrown.
+	 */
 	public void run(TreeSet<DataPacket<T>> outputSet, File f, T zeroValue, T value, String sensor, String measurementName) {
-		//System.out.println("RainFallThread");
-
 		try {
 			fos = new FileOutputStream(f);
-			//System.out.println("fos");
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			oos = new ObjectOutputStream(fos);
-			//System.out.println("oos");
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		eventTime = ZonedDateTime.now();
-
 		DataPacket<T> rdp = new DataPacket<T>(eventTime, sensor, measurementName, value);
-
 		outputSet.add(rdp);
-		 TreeSet<DataPacket<T>> rainSerialize = (TreeSet<DataPacket<T>>) 
+		 TreeSet<DataPacket<T>> dataPacket = (TreeSet<DataPacket<T>>) 
 				 outputSet.tailSet(new DataPacket<T>(ZonedDateTime
 		          .now()
 		          .minusSeconds(60), sensor, measurementName, zeroValue));
-
 			try {
-				oos.writeObject(rainSerialize);
-				//System.out.println("oos2");
-
+				oos.writeObject(dataPacket);
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
-			
+			}		
 			try {
 				Controller.CON.<T>readSerializedData(f);
 				oos.flush();
 			    oos.close();
-				//System.out.println("con");
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//System.out.println("RainFallRateThread");
 	}
 
 }

@@ -1,52 +1,89 @@
+/*
+ * HeatIndex class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
+ */
 
 package computations;
 
+import java.io.File;
+import java.util.TreeSet;
+
 import controller.Controller;
+import controller.DataPacket;
 import sensors.AbstractSensor;
 
 /**
- * Class for calculating the heat index given the relative humidity and temperature. This uses the  
+ * 
  * @author Cade Reynoldson
+ * @author Gregory Hablutzel
  * @version 1.0
- * @date 4/12/2020
+ * This class represents the Heat Index calculation for the VantagePro2 Weather Station.
+ * HeatIndex calculates the heat index given the most recent relative humidity and temperature measurements.
  */
-public class HeatIndex  extends AbstractSensor<Integer> implements Runnable {
+public class HeatIndex extends AbstractSensor<Integer> implements Runnable {
     
-
 	private String sensorName = "HeatIndex";
 	private String measurementDescription = "heat index";
 	private static final int MIN = -40; // -40F
 	private static final int MAX = 165; // -165F
 	
+	TreeSet<DataPacket<Double>> tempDataSet;
+	TreeSet<DataPacket<Integer>> humidityDataSet;
+	
+	/**
+	 * Constructs a HeatIndex object.
+	 * @param file: input file.
+	 * @param tempDataSet: temperature data.
+	 * @param humidityDataSet: humidity data.
+	 * @throws IllegalArgumentException if file is null
+	 * @throws IllegalArgumentException if tempDataSet is null
+	 * @throws IllegalArgumentException if humidityDataaSet is null
+	 */
+	public HeatIndex(File file, TreeSet<DataPacket<Double>> tempDataSet, TreeSet<DataPacket<Integer>> humidityDataSet) {
+		if (file == null) {
+			throw new IllegalArgumentException("file cannot be null");
+		}
+		if (tempDataSet == null) {
+			throw new IllegalArgumentException("input set cannot be null");
+		}
+		if (humidityDataSet == null) {
+			throw new IllegalArgumentException("input set cannot be null");
+		}
+		 dataSet = new TreeSet<DataPacket<Integer>>();
+		 this.file = file;
+		 this.tempDataSet = tempDataSet;
+		 this.humidityDataSet = humidityDataSet;
+	}
+	
+	
     /**
-     * Calculates the heat index given the relative humidity and temperature (in farenheit). 
+     * Calculates the heat index given the relative humidity and temperature (in fahrenheit). 
      * @param relativeHumidity the relative humidity. NOTE: for 80% humidity, plug in 80, not 0.80 
      * @param temperature the temperature.
      * @return the heat index. 
      */
 	
     public int calculateHeatIndex() {
-    	double relativeHumidity = 50.0;
-    	double temperature = 60.0;
+    	double temperature = tempDataSet.last().getValue(); // get most recent temp value
+	  	int relativeHumidity = humidityDataSet.last().getValue(); // get most recent humidity value
         double heatIndex = simpleEquation(relativeHumidity, temperature);
         if (heatIndex >= 80.0) { 
             heatIndex = regressionEquation(relativeHumidity, temperature);
         }
-        if (heatIndex > 165) {
-        	heatIndex = 165;
+        if (heatIndex > MAX) {
+        	heatIndex = MAX;
         }
-        if (heatIndex < -40) { 
-        	heatIndex = -40;
+        if (heatIndex < MIN) { 
+        	heatIndex = MIN;
         }
         return (int) Math.round(heatIndex);
     }
-//    public static double calculateHeatIndex(double relativeHumidity, double temperature) {
-//        double heatIndex = simpleEquation(relativeHumidity, temperature);
-//        if (heatIndex >= 80.0) 
-//            return regressionEquation(relativeHumidity, temperature);
-//        else
-//            return heatIndex;
-//    }
     
     /**
      * Calculates the heat index in cases that the temperature is greater than 80 degrees.
@@ -86,20 +123,12 @@ public class HeatIndex  extends AbstractSensor<Integer> implements Runnable {
     private static double simpleEquation(double relativeHumidity, double temperature) {
         return 0.5 * (temperature + 61.0 + ((temperature - 68.0) * 1.2) + (relativeHumidity * 0.094));
     }
-    
-//    public static void main(String[] args) {
-//        double t1 = calculateHeatIndex(50.0, 60.0);
-//        System.out.println("Heat index of 50RH and 60F (Should be ~58):" + t1);
-//        double t2 = calculateHeatIndex(86, 85);
-//        System.out.println("Heat index of 86RH and 85F (Should be ~100):" + t2);
-//        double t3 = calculateHeatIndex(10, 90);
-//        System.out.println("Heat index of 10RH and 90F (Should be ~85):" + t3);
-//    }
-	/*
-	 *  Arguments:
-	 *   outputSet, outputFile, double or int zero value, randomOutputFunction, sensor name, measurement name.
+  
+	/**
+	 * Method that executes in Runnable thread.
+	 * Generates a new data point, adds it to the data set, and serializes last 60 seconds of data set to the Console.
 	 */
 	public void run() {
-		super.run(Controller.HEATINDEX_SET, Controller.HEATINDEX_FILE, 0, calculateHeatIndex(), sensorName, measurementDescription);
+		super.run(dataSet, Controller.HEATINDEX_FILE, 0, calculateHeatIndex(), sensorName, measurementDescription);
 	}
 }

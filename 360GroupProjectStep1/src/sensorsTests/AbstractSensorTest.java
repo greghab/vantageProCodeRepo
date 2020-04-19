@@ -1,45 +1,35 @@
-/**	
- * 
+/*
+ * ABstractSensor Test class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
  */
+
 package sensorsTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.TreeSet;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import controller.Controller;
-import controller.DataPacket;
 import sensors.AbstractSensor;
-import sensors.RainSensor;
-import sensors.WindSensor;
+
 
 /**
- * @author greghab
- *
+ * 
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class tests the AbstractSensor class for the VantagePro2 Weather Station.
  */
 class AbstractSensorTest {
 
-	/**
-	 * @throws java.lang.Exception
+	
+	/*
+	 * Ensures rounding method operates correctly.
 	 */
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
-		//Controller con = new Controller();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeEach
-	void setUp() throws Exception {
-	}
-
 	@Test
 	void testRoundMethod() {
 

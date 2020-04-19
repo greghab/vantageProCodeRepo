@@ -1,62 +1,92 @@
+/*
+ * DewPoint class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
+ */
+
 package computations;
 
-import controller.Controller;
+import java.io.File;	
+import java.util.TreeSet;
+import controller.DataPacket;
 import sensors.AbstractSensor;
 
+/**
+ * 
+ * @author Cade Reynoldson
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class represents the DewPoint calculation for the VantagePro2 Weather Station.
+ * DewPoint receives temperature and relative humidity data, and calculates and serializes the dewpoint.
+ *
+ */
+
 public class DewPoint extends AbstractSensor<Integer> implements Runnable {
-	
+
 
 	private String sensorName = "Dewpoint";
 	private String measurementDescription = "dewpoint";
 	private static final int MIN = -105; // -105F
 	private static final int MAX = 130; // 130F
-	
-    /**
-     * Calculates the dew point given an air temperature
-     * @param airTemperature
-     * @param relativeHumidity
-     * @return
-     */
-//    public static double calculateDewPoint(double airTemperature, double relativeHumidity) {
-//        double lnHumidity = Math.log(relativeHumidity / 100);
-//        double tMult = 17.27 * airTemperature;
-//        double tPlus = 237.3 + airTemperature;
-//        return (237.3 * (lnHumidity + (tMult / tPlus))) / (17.27 - (lnHumidity + (tMult / tPlus))); 
-//    }
-	  public int calculateDewPoint() {
-		  	double airTemperature = Controller.TEMPERATURE_SET.last().getValue(); // get most recent temp value
-	        //System.out.println("temp is " + airTemperature);
+	TreeSet<DataPacket<Double>> tempDataSet;
+	TreeSet<DataPacket<Integer>> humidityDataSet;
 
-		  	int relativeHumidity = Controller.HUMIDITY_SET.last().getValue(); // get most recent humidity value
-	        //System.out.println("humidity is " + relativeHumidity);
+	/**
+	 * 
+	 * @param file, output file.
+	 * @param tempDataSet, temperature data set.
+	 * @param humidityDataSet, humidity data set.
+	 * @throws IllegalArgumentException if file is null
+	 * @throws IllegalArgumentException if tempDataSet is null
+	 * @throws IllegalArgumentException if humidityDataaSet is null
+	 */
+	public DewPoint(File file, TreeSet<DataPacket<Double>> tempDataSet, TreeSet<DataPacket<Integer>> humidityDataSet) {
+		if (file == null) {
+			throw new IllegalArgumentException("file cannot be null");
+		}
+		if (tempDataSet == null) {
+			throw new IllegalArgumentException("input set cannot be null");
+		}
+		if (humidityDataSet == null) {
+			throw new IllegalArgumentException("input set cannot be null");
+		}
+		dataSet = new TreeSet<DataPacket<Integer>>();
+		this.file = file;
+		this.tempDataSet = tempDataSet;
+		this.humidityDataSet = humidityDataSet;
+	}
 
-		  //	double airTemperature = 68.0;
-		  	//int relativeHumidity = 70;
-	        double lnHumidity = Math.log(relativeHumidity / 100.0);
-	        double tMult = 17.27 * airTemperature;
-	        double tPlus = 237.3 + airTemperature;
-	        double dewPoint = (237.3 * (lnHumidity + (tMult / tPlus))) / (17.27 - (lnHumidity + (tMult / tPlus))); 
-	        
-	        if (dewPoint > 130) {
-	        	dewPoint = 130;
-	        }
-	        if (dewPoint < -105) {
-	        	dewPoint = -105;
-	        }
-	        //System.out.println("dewpoint is " + dewPoint);
-	        return (int) Math.round(dewPoint);
-	    }
-    
-//    public static void main(String[] args) {
-//        double d1 = calculateDewPoint(20, 70);
-//        System.out.println("Dew point of 68 degrees and 70% humidity (should be ~62): " + d1);
-//    }
-//    
-	/*
-	 *  Arguments:
-	 *   outputSet, outputFile, double or int zero value, randomOutputFunction, sensor name, measurement name.
+
+	/**
+	 * Calculates the dew point given an air temperature and relative humidity.
+	 * @return returns dew point.
+	 */
+	public int calculateDewPoint() {
+		double airTemperature = tempDataSet.last().getValue(); // get most recent temperature value.
+		int relativeHumidity = humidityDataSet.last().getValue(); // get most recent humidity value.
+		double lnHumidity = Math.log(relativeHumidity / 100.0);
+		double tMult = 17.27 * airTemperature;
+		double tPlus = 237.3 + airTemperature;
+		double dewPoint = (237.3 * (lnHumidity + (tMult / tPlus))) / (17.27 - (lnHumidity + (tMult / tPlus))); 
+		if (dewPoint > MAX) {
+			dewPoint = MAX;
+		}
+		if (dewPoint < MIN) {
+			dewPoint = MIN;
+		}
+		return (int) Math.round(dewPoint);
+	}
+
+	/**
+	 * Method that executes in Runnable thread.
+	 * Generates a new data point, adds it to the data set, and serializes last 60 seconds of data set to the Console.
 	 */
 	public void run() {
-		super.run(Controller.DEWPOINT_SET, Controller.DEWPOINT_FILE, 0, calculateDewPoint(), sensorName, measurementDescription);
+		super.run(dataSet, file, 0, calculateDewPoint(), sensorName, measurementDescription);
 	}
 }

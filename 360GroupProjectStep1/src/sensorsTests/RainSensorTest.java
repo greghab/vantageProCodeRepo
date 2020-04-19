@@ -1,12 +1,18 @@
-/**	
- * 
+/*
+ * RainSensor Test class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
  */
+
 package sensorsTests;
 
 import static org.junit.jupiter.api.Assertions.*;	
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import controller.Controller;
@@ -14,41 +20,43 @@ import controller.DataPacket;
 import sensors.RainSensor;
 
 /**
- * @author greghab
- *
+ * 
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class tests the RainSensor class for the VantagePro2 Weather Station.
  */
 class RainSensorTest {
 
-	/**
-	 * @throws java.lang.Exception
+	/*
+	 * Ensures the rain sensor is generating the correct values each time.
 	 */
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
-		//Controller con = new Controller();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeEach
-	void setUp() throws Exception {
-	}
 	@Test
 	void testGeneratedValues() {
-		Double[] rainGeneratedValues = {0.43, 0.44 ,0.48};
+		Double[] rainGeneratedValues = {0.01, 0.04 ,0.0};
 
 		//ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-		RainSensor rain = new RainSensor();
+		RainSensor rain = new RainSensor(Controller.RAINFALL_FILE);
 		rain.run();
 		rain.run();
 		rain.run();
 		
 		int i = 0;
-		for (DataPacket<Double> dp : Controller.RAINFALL_SET) {
+		for (DataPacket<Double> dp : rain.getSet()) {
 			if (Double.compare(dp.getValue(), rainGeneratedValues[i]) != 0) {
 				fail("values dont match");
 			}
 			i++;
 		}
+	}
+	
+	/*
+	 * Triggers IllegalArgumentException for file parameter in constructor.
+	 */
+	@Test
+	void testConstructorNullFileException() {
+		  assertThrows(IllegalArgumentException.class,
+		            ()->{
+		        		new RainSensor(null); 
+		            });
 	}
 }

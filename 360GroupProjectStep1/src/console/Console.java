@@ -1,35 +1,49 @@
+/*
+ * Console class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
+ */
+
 package console;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.TreeSet;
 
-import controller.Controller;
 import controller.DataPacket;
-import sensors.RainSensor;
 
-// Display Information from Controller, through serialized connection.
-// could include a GUI if we get to that.
+
+/**
+ * 
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class is the (Display) Console  for the VantagePro2 Weather Station.
+ * It displays information from the controller, through a serialized connection.
+ * The information it displays is the reading and calculations from the serialized sensor and computational threads.
+ */
+
 public class Console {
 
+	/**
+	 * 
+	 * @param <T> Can work for integers or doubles.
+	 * @param f: takes in a file to read serialized data from.
+	 * @throws Exception: throws exceptions for FileInputStream, ObjectInputStream.
+	 * Reads serialized data, and prints it to console.
+	 */
 	public <T> void readSerializedData(File f) throws Exception {
-		//clearScreen();
 		FileInputStream fis = new FileInputStream(f);
 		ObjectInputStream ois = new ObjectInputStream(fis);
-		//Save obj1 = (Save) ois.readObject();
-
-		 TreeSet<DataPacket<T>> obj1 = (TreeSet<DataPacket<T>>) ois.readObject();
-
+		 @SuppressWarnings("unchecked")
+		TreeSet<DataPacket<T>> obj1 = (TreeSet<DataPacket<T>>) ois.readObject();
 		// get a DataPacket from the set, used for the println statement.
 		 DataPacket<T> dp = obj1.iterator().next(); 
 		System.out.println("serialized " + dp.getMeasurement() + " data is: " + obj1.toString());
 	    ois.close();
-	}
-	
-	
-	public static void clearScreen() {  
-		//System.out.println(new String(new char[50]).replace("\0", "\r\n"));
 	}
 }

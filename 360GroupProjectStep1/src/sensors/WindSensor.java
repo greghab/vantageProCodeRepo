@@ -1,44 +1,36 @@
 /*
- * TCSS 360 - Spring 2020	
- * Instructor: Kivanc A. Dincer
- * Group Project 1
- * Due date: 19 April 2020
+ * WindSensor class for Weather Station TCSS 360 		
+ *  
+ * Class: TCSS 360
+ * Professor: Kivanç A. DINCER
+ * Assignment: #1 Weather Station
+ * Due Date: 4/19/20
+ * Year: Spring 2020
+ * School: UW-Tacoma
  */
 
 package sensors;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.time.ZonedDateTime;
 import java.util.TreeSet;
 
 import controller.Controller;
 import controller.DataPacket;
 
 /**
- * Display wind sensor's data based off the cable length.
- *
- * @author Cade Reynoldson
- * @author Daniel Machen
- * @author Egor Maksimenka
- * @author Gregory Hablutzel
  * @author Melinda Tran
- * @version 9 April 2020
- */
-
-/*
- * 
+ * @author Gregory Hablutzel
+ * @version 1.0
+ * This class is the Wind Sensor class for the VantagePro2 Weather Station.
+ * It generates wind speed data at a given interval in data packets, stores these in a
+ *  tree set, and serializes it to the console.
+ 
     Cable Length, Anemometer: 40 feet (12 m) (included) 240 feet (73 m) (maximum recommended)
-    Note: Maximum displayable wind decreases as the length of cable increases. At 140’ (42 m) of cable, 
+    Note: Maximum display-able wind decreases as the length of cable increases. At 140’ (42 m) of cable, 
     	the maximum wind speed displayed is 135 mph (60 m/s); at 240’ (73 m), the maximum wind speed 
     	displayed is 100 mph (34 m/s).
          - When calculating the max wind speed for our random input generator, we need to factor in the 
          cable length as a field.
-         
-         * 0 <= length < 140: 
  */
 public class WindSensor extends AbstractSensor<Integer> implements Runnable{
 	
@@ -55,14 +47,17 @@ public class WindSensor extends AbstractSensor<Integer> implements Runnable{
 	private final int maxWindSpeed; // MPH
 	
 	/**
-	 * The WindSensor.java class constructor.
-	 * 
-	 * @param theOutputSet is the packet that contains the wind data.
-	 * @param theFile is the file to write the data into.
-	 * @param theCableLength is the length of the anemometer.
+	 * Constructs a WindSensor object.
+	 * @param file: output file.
+	 * @param theCableLength: WindSensor cable length.
+	 * @throws IllegalArgumentException if file is null
 	 */
-	public WindSensor(int theCableLength) {
-		super();
+	public WindSensor(File file, int theCableLength) {
+		if (file == null) {
+			throw new IllegalArgumentException("file cannot be null");
+		}
+		 dataSet = new TreeSet<DataPacket<Integer>>();
+		 this.file = file;
 		this.theCableLength = theCableLength;
 		maxWindSpeed = calcMaxWindSpeed();
 	}
@@ -88,25 +83,25 @@ public class WindSensor extends AbstractSensor<Integer> implements Runnable{
 	
 	/**
 	 * Generate a random integer for the wind speed with a range of [0, maxWindSpeed]
-	 * @return
+	 * @return returns the wind speed.
 	 */
 	public int getWindSpeed() {
 		return rand.nextInt(maxWindSpeed + 1); // [0, maxWindSpeed]
 	}
 	/**
 	 * Generate a random integer for the wind speed with a range of [0, maxWindSpeed]
-	 * @return
+	 * @return returns the max wind speed.
 	 */
 	public int getMaxWindSpeed() {
 		return maxWindSpeed;
 	}
 	
 
-	/*
-	 *  Arguments:
-	 *   outputSet, outputFile, double or int zero value, randomOutputFunction, sensor name, measurement name.
+	/**
+	 * Method that executes in Runnable thread.
+	 * Generates a new data point, adds it to the data set, and serializes last 60 seconds of data set to the Console.
 	 */
 	public void run() {
-		super.run(Controller.WINDSPEED_SET, Controller.WINDSPEED_FILE, 0, getWindSpeed(), sensorName, measurementDescription);
+		super.run(dataSet, Controller.WINDSPEED_FILE, 0, getWindSpeed(), sensorName, measurementDescription);
 	}
 }
