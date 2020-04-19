@@ -54,9 +54,15 @@ public class Controller {
 	public static final int DEWPOINT_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.
 
 	/*
-	 * Delay to before rate starts (they need sensor data to be populated to do calculations).
+	 * Delay to before sensors start.
 	 */
-	public static final int RATE_INITIAL_DELAY = 45; // delay to allow sensor data to populate before any rates are calculated on data.
+	public static final int SENSOR_INITIAL_DELAY = 0;
+	
+	/*
+	 * Delay to before rate calculations start.
+	 * Allows sensor data to populate before any rates are calculated on data.
+	 */
+	public static final int RATE_INITIAL_DELAY = 45;
 
 	/*
 	 * WindSensor's Cable Length, which affects the max wind speed allowed.
@@ -93,19 +99,19 @@ public class Controller {
 		// SENSORS:
 		
 		TemperatureSensor temp = new TemperatureSensor(TEMPERATURE_FILE);
-		scheduledExecutorService.scheduleAtFixedRate(temp, 0, TEMP_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(temp, SENSOR_INITIAL_DELAY, TEMP_UPDATE_INTERVAL, TimeUnit.SECONDS);
 		
 		WindSensor windSpeed = new WindSensor(WINDSPEED_FILE, WINDSENSOR_LENGTH);
-		scheduledExecutorService.scheduleAtFixedRate(windSpeed, 0, WINDSPEED_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(windSpeed, SENSOR_INITIAL_DELAY, WINDSPEED_UPDATE_INTERVAL, TimeUnit.SECONDS);
 		
 		WindDirection windDirection = new WindDirection(WINDDIRECTION_FILE);
-		scheduledExecutorService.scheduleAtFixedRate(windDirection, 0, WINDDIRECTION_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(windDirection, SENSOR_INITIAL_DELAY, WINDDIRECTION_UPDATE_INTERVAL, TimeUnit.SECONDS);
 
 		RainSensor rain = new RainSensor(RAINFALL_FILE);
-		scheduledExecutorService.scheduleAtFixedRate(rain, 0, RAINFALL_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(rain, SENSOR_INITIAL_DELAY, RAINFALL_UPDATE_INTERVAL, TimeUnit.SECONDS);
 		
 		HumiditySensor humidity = new HumiditySensor(HUMIDITY_FILE);
-		scheduledExecutorService.scheduleAtFixedRate(humidity, 0, HUMIDITY_UPDATE_INTERVAL, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(humidity, SENSOR_INITIAL_DELAY, HUMIDITY_UPDATE_INTERVAL, TimeUnit.SECONDS);
 		
 		// COMPUTATIONS:
 		
