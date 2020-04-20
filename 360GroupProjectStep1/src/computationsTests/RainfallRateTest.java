@@ -44,13 +44,10 @@ class RainfallRateTest {
 		rain.run(); // 0.01
 		rain.run(); // 0.04
 		rain.run(); // 0.0
-		System.out.println("test");
 
 		RainfallRate rainfallRate = new RainfallRate(Controller.RAINRATE_FILE, rain.getSet());	
-		System.out.println("test");
 
 		rainfallRate.run();
-		System.out.println("rainrate is " + rainfallRate.getSet().last().getValue());
 		Double[] rainfallGeneratedValues = {3.0};
 		int i = 0;
 		for (DataPacket<Double> dp : rainfallRate.getSet()) {

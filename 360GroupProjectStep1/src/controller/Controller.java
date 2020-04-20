@@ -72,15 +72,15 @@ public class Controller {
 	/*
 	 * Files used to transmit serialized data.
 	 */
-	public static final File RAINFALL_FILE = new File("rainfallSerializedOutput.txt");
-	public static final File RAINRATE_FILE = new File("rainfallRateSerializedOutput.txt");
-	public static final File TEMPERATURE_FILE = new File("temperatureSerializedOutput.txt");
-	public static final File HUMIDITY_FILE = new File("humiditySerializedOutput.txt");
-	public static final File WINDCHILL_FILE = new File("windChillSerializedOutput.txt");
-	public static final File WINDDIRECTION_FILE = new File("windDirectionSerializedOutput.txt");
-	public static final File WINDSPEED_FILE = new File("windSpeedSerializedOutput.txt");
-	public static final File DEWPOINT_FILE = new File("dewpointSerializedOutput.txt");
-	public static final File HEATINDEX_FILE = new File("heatIndexSerializedOutput.txt");
+	public static final File RAINFALL_FILE = new File("serializedData/rainfallSerializedOutput.txt");
+	public static final File RAINRATE_FILE = new File("serializedData/rainfallRateSerializedOutput.txt");
+	public static final File TEMPERATURE_FILE = new File("serializedData/temperatureSerializedOutput.txt");
+	public static final File HUMIDITY_FILE = new File("serializedData/humiditySerializedOutput.txt");
+	public static final File WINDCHILL_FILE = new File("serializedData/windChillSerializedOutput.txt");
+	public static final File WINDDIRECTION_FILE = new File("serializedData/windDirectionSerializedOutput.txt");
+	public static final File WINDSPEED_FILE = new File("serializedData/windSpeedSerializedOutput.txt");
+	public static final File DEWPOINT_FILE = new File("serializedData/dewpointSerializedOutput.txt");
+	public static final File HEATINDEX_FILE = new File("serializedData/heatIndexSerializedOutput.txt");
 
 	/*
 	 * Instance of the console which prints serialized data.
