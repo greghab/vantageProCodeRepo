@@ -11,10 +11,8 @@
 
 package computations;
 
-import java.io.File;	
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.ZonedDateTime;
+import java.io.File;		
+import java.util.Iterator;
 import java.util.TreeSet;
 import controller.Controller;
 import controller.DataPacket;
@@ -31,9 +29,6 @@ import sensors.AbstractSensor;
 public class RainfallRate extends AbstractSensor<Double> implements Runnable {
 	private String sensor = "Rain";
 	private String measurementString = "rain rate";
-	
-	// Take the last 60 seconds to analyze.
-	private static final long PREV_DATA_LENGTH = 60;
 	
 	private static final int maxVal = 30; // 30"/hr
 	private static final double minVal = 0.04; // 0.04"/hr
@@ -60,29 +55,28 @@ public class RainfallRate extends AbstractSensor<Double> implements Runnable {
 	}
 	
 	/**
-	 * Calculates the rain rate (average) given the past 60 seconds of rain data.
+	 * Calculates the rain rate (average) given the past 60 seconds of rain data (last 3 data points).
+	 * (each data point is 20 seconds apart).
+	 * @throws IllegalArgumentException if there is not 3 data points to analyze.
 	 * @return returns the rain rate.
 	 */
 	public double calcRainRate() {
 		// 0 or [0.4, 30]
-		 TreeSet<DataPacket<Double>> inputSetTail = (TreeSet<DataPacket<Double>>) 
-				 rainDataSet.tailSet(new DataPacket<Double>(ZonedDateTime
-		          .now()
-		          .minusSeconds(PREV_DATA_LENGTH), sensor, measurementString, 0.0));
-
-		 if (inputSetTail.size() == 0) {
-			 throw new IllegalArgumentException("rain rate input set is empty!");
+		 if (rainDataSet.size() < 3) {
+			 throw new IllegalArgumentException("rain rate input set too small!");
 		 }
-		 BigDecimal sumVal = new BigDecimal(0);
-		 
-		 for (DataPacket<Double> dp: inputSetTail) {
-			 BigDecimal dpVal = new BigDecimal(dp.getValue());
-			 sumVal = sumVal.add(dpVal);
-		 }
-		 BigDecimal inputSizeBig = new BigDecimal(inputSetTail.size());
-	       BigDecimal rateBig = sumVal.divide(inputSizeBig, RoundingMode.HALF_UP);
+		double sum = 0;
+		Iterator<DataPacket<Double>> itr = rainDataSet.descendingIterator();
+		int i = 1;
+		while(itr.hasNext() && i <= 3) {
+			DataPacket<Double> dp = itr.next();
+			sum += dp.getValue();
+			i++;
+		}
+		
+		double ave = sum / 3.0;
 
-		 double rate = rateBig.doubleValue() /20.0 * 3600.0 ; // have "/20 sec, want "/hr
+		 double rate = ave /20.0 * 3600.0 ; // have "/20 sec, want "/hr
 		 
 		 rate = round(rate, 2);
 

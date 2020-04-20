@@ -62,7 +62,7 @@ public class Controller {
 	 * Delay to before rate calculations start.
 	 * Allows sensor data to populate before any rates are calculated on data.
 	 */
-	public static final int RATE_INITIAL_DELAY = 45;
+	public static final int RATE_INITIAL_DELAY = 61;
 
 	/*
 	 * WindSensor's Cable Length, which affects the max wind speed allowed.

@@ -37,6 +37,7 @@ class WindChillTest {
 
 	/*
 	 * Ensures that if wind chill works using generated values from temp and windspeed.
+	 * temp = 80.1F, windSpeed = 3MPH, WindChill = 84F (expected).
 	 */
 	@Test
 	void testGeneratedValues() {
@@ -44,9 +45,9 @@ class WindChillTest {
 		TemperatureSensor temp = new TemperatureSensor(Controller.TEMPERATURE_FILE);
 		WindSensor windSpeed = new WindSensor(Controller.WINDSPEED_FILE, Controller.WINDSENSOR_LENGTH);
 		WindChill windChill = new WindChill(Controller.WINDCHILL_FILE, temp.getSet(), windSpeed.getSet());
-		temp.run();
-		windSpeed.run();
-		windChill.run();
+		temp.run();		  // 80.1F
+		windSpeed.run();  // 3MPH
+		windChill.run();  // 84F
 
 		if (windChill.getSet().last().getValue() != 84) {
 			fail("values dont match");
@@ -90,6 +91,7 @@ class WindChillTest {
 
 	/*
 	 * Triggers IllegalArgumentException if wind speed is less than 3MPH.
+	 * 
 	 */
 	@Test
 	void testWindSpeedLessThan3Exception() {
@@ -100,7 +102,7 @@ class WindChillTest {
 					WindChill windChill = new WindChill(Controller.WINDCHILL_FILE, temp.getSet(), windSpeed.getSet());
 					temp.run();
 					ZonedDateTime eventTime = ZonedDateTime.now();
-					windSpeed.getSet().add(new DataPacket<Integer>(eventTime, "wind", "wind", 1));
+					windSpeed.getSet().add(new DataPacket<Integer>(eventTime, "wind", "wind", 1)); // set windspeed at 1MPH
 					windChill.calculateWindChill();
 				});
 	}
@@ -108,6 +110,7 @@ class WindChillTest {
 
 	/*
 	 * Ensures that if wind chill is greater than 135 (the MAX), that it will get set to 135.
+	 * (Calculating windchill based of 200F temp and 5MPH wind speed, which results in a wind chill > 135).
 	 */
 	@Test
 	void testWindChillGreaterThan135() {
@@ -124,6 +127,7 @@ class WindChillTest {
 
 	/*
 	 * Ensures that if wind chill is less than -110(the MIN), that it will get set to -110.
+	 * (Calculating windchill based of -200F temp and 5MPH wind speed, which results in a wind chill < -110).
 	 */
 	@Test
 	void testWindChillLesshanNegative110() {
