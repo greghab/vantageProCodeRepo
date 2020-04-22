@@ -1,4 +1,18 @@
+#Sensors:
+# rain, windspeed + direction, temp, humidity.
+
+
+
 # rain rate takes average of last 3 data points:
 grep -E  'rain'	exampleOutput.txt
+
 # heat index takes most recent temp + humidity
 grep -E  'temp|humid|heat'  exampleOutput.txt
+
+# dewpoint takes most recent temp + humidity
+grep -E  'temp|humid|dew'  exampleOutput.txt
+
+# windChill takes most recent temp + humidity
+grep -E  'temp|humid|chill'  exampleOutput.txt
+
+

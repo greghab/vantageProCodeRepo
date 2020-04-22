@@ -48,7 +48,7 @@ public class Controller {
 	public static final int TEMP_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.
 	public static final int WINDCHILL_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.
 	public static final int WINDDIRECTION_UPDATE_INTERVAL = 3; // 2.5 to 3 seconds per specification.
-	public static final int WINDSPEED_UPDATE_INTERVAL = 3; // 2.5 to 3 seconds per specification.
+	public static final int WINDSPEED_UPDATE_INTERVAL = 3; // 2.5 1to 3 seconds per specification.
 	public static final int HEATINDEX_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.
 	public static final int HUMIDITY_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.
 	public static final int DEWPOINT_UPDATE_INTERVAL = 10; // 10 to 12 seconds per specification.

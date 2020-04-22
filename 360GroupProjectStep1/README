@@ -7,4 +7,72 @@ README:
  b) Get Eclipse set up
    b1) Open Eclipse
    b2) File -> Import -> General -> Projects from Folder or Archive -> Directory -> (select the file you unzipped).
+   
+ c) open Controller with main method:
+   c1) Click on 360GroupProjectStep1 -> src -> controller -> Controller.java 
+   c2  On the top bar of Eclipse, click the green circular icon with a white triangle in the middle titled "Run Controller" to run the program.
+   
+   
+2) How to run Unit Tests:
+ a) Right Click on project folder '360GroupProjectStep1' -> Run as -> JUnit Test
  
+ 
+-------------------------------------------------------------------------------------
+Folder Structure:
+serializedData: contains serialized data sent from sensors to Console (using Java's serializable interface).
+src: contains source code
+
+ - Computations:
+      Contains sensors (threads that repeat and serialize data) that take in other sensor input, and calculate a value.
+ - computationsTest:
+      Contains test cases for computations.
+ - console:
+      Contains the console
+ - controller:
+      Contains the controller
+ - controllerTests
+      Contains test cases for controller.
+ - sensor
+ 	  Contains the sensors
+ - sensorTests
+      Contains test cases for the sensors.
+      
+
+   
+   
+-------------------------------------------------------------------------------------
+FEATURES:
+
+Support:
+
+    Sensors
+        Temperature
+        Humidity
+            (Dewpoint calculation [Temp + humidity])
+        Wind (Speed + Direction)
+            (WindChill Calculation [Wind Speed + temp])
+        Rainfall
+            (RainRate calculation [Rain]) 
+            
+            HeatIndex calculation (temp + humidity)
+            
+    Println Console output
+    Serialization of sensors (threads)
+
+Not Support (outside scope):
+
+    Complex console with various display modes
+    User input to change what displays on console
+    Barometric pressure (sensor on console)
+    Evapotranspiration (don't have solar radiation sensor)
+    Forecast (don't have barometric reading & trend)
+    Leaf Wetness (don't have leaf wetness sensor)
+    Moon Phase (too complex, equation is very complex)
+    Soil Moisture (don't have soil moisture sensor)
+    Solar Radiation (don't have solar radiation sensor)
+    Sunrise and Sunset (to get the required accuracy of +-1 minute is very complex. The actual unit just gets its data from a database through the internet, and doesn't actually calculate it (like we would be expected to do. And this would be implemented on the console, which we are not required to do).
+    Extra temperature probes (we're just doing one).
+    Temperature  Humidity Sun Wind Index (don't have solar radiation sensor)
+    Ultra Violet (UV) Radiation Dose (don't have UV sensor)
+    Ultra Violet (UV) Radiation Index (don't have UV sensor)
+    Clock (there are no functions that need clock output, however we implicitly use a clock when we use the Java library ZonedDateTime for our sensor data).
